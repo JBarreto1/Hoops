@@ -53,21 +53,21 @@ def gamesPlayed(playerIDs):
             #Sometimes players are injured but still appear on the roster. If they DNP, they're zero, looks like if they didn't suit up, it's NULL
             gID = str(game['game']['id'])
             if gID not in gameIDs.keys():
-                #accumulate whether each player played in the game and whether it was a win or loss
+                #accumulate the minutes for each player played in the game and whether it was a win or loss
                 gameDict = {
                     'win': winLoss(game['game']),
-                    '6': False,
-                    '1689': False,
-                    '1798': False
+                    '6': 0,
+                    '1689': 0,
+                    '1798': 0
                 }
-                gameDict[str(game['player']['id'])] = True
+                gameDict[str(game['player']['id'])] = int(game['min'][:-3]) #minutes is stored as a string "mm:ss" or "m:ss", I only care about the minutes
                 gameIDs[gID] = gameDict
             else:
-                gameIDs[gID][str(game['player']['id'])] = True
+                gameIDs[gID][str(game['player']['id'])] = int(game['min'][:-3])
     wins = 0
     losses = 0
     for outCome in gameIDs.values():
-        if outCome['6'] and outCome['1689'] and outCome['1798']:
+        if (outCome['6'] > 0) and (outCome['1689'] > 0) and (outCome['1798'] > 0):
             #Did all three play? What was the outcome if so?
             print(outCome)
             if outCome['win']:
