@@ -38,17 +38,14 @@ def accStats(pID,page):
     return response.json()
 
 def gamesPlayed(playerIDs):
-    morePages = True
     data = []
     page = 1
-    while morePages:
-        #Data comes in through pages at 100 lines per page
+    newData = accStats(playerIDs,page)
+    data = data + newData['data']
+    totalPages = newData['meta']['total_pages']
+    for page in range(2,totalPages+1):
         newData = accStats(playerIDs,page)
         data = data + newData['data']
-        if newData['meta']['next_page'] is None:
-            morePages = False
-        else:
-            page += 1
     gameIDs = {}
     #Each line of data is a stat line for a player for a game
     for game in data:
